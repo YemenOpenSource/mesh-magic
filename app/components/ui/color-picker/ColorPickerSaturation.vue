@@ -8,6 +8,7 @@ const props = defineProps<{
 }>();
 
 const colorPickerContext = inject<ColorPickerContext>(COLOR_PICKER_KEY);
+const currentColor = computed(() => colorPickerContext?.color.value);
 const previewColor = computed(() => colorPickerContext?.previewColor.value);
 
 const hueHex = computed(() => previewColor.value?.hex);
@@ -29,21 +30,25 @@ const indicatorPos = computed(() => {
 });
 
 const saturationRef = ref<HTMLDivElement | null>(null);
-const { elementX, elementY, elementWidth, elementHeight } =
+const { elementX, elementY, elementWidth, elementHeight, isOutside } =
   useMouseInElement(saturationRef);
 const isDragging = ref(false);
 const clamp = (v: number, a = 0, b = 1) => Math.max(a, Math.min(b, v));
 
+let rafId: number | null = null;
 const updateColorFromPosition = () => {
-  if (!colorPickerContext) return;
-  const w = elementWidth.value ?? 0;
-  const h = elementHeight.value ?? 0;
-  if (!w || !h) return;
+  if (!colorPickerContext || rafId || isOutside.value) return;
 
-  const s = clamp(elementX.value / w, 0, 1);
-  const v = clamp(1 - elementY.value / h, 0, 1);
-
-  colorPickerContext.setHsv({ s, v });
+  rafId = requestAnimationFrame(() => {
+    const w = elementWidth.value ?? 0;
+    const h = elementHeight.value ?? 0;
+    if (w && h) {
+      const s = clamp(elementX.value / w, 0, 1);
+      const v = clamp(1 - elementY.value / h, 0, 1);
+      colorPickerContext.setHsv({ s, v });
+    }
+    rafId = null;
+  });
 };
 
 const onPointerDown = (e?: PointerEvent) => {
@@ -91,6 +96,7 @@ useEventListener(window, "pointerup", onPointerUp);
       :style="{
         left: indicatorPos.left,
         top: indicatorPos.top,
+        backgroundColor: currentColor?.hex,
         touchAction: 'none',
         forcedColorAdjust: 'none',
         boxShadow: 'black 0px 0px 0px 1px, black 0px 0px 0px 1px inset',

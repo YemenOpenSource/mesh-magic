@@ -22,8 +22,12 @@ const previewColorRef = ref<ColorValue>(
   parseColor({ ...color.value.hsv, s: 1, v: 1 }),
 );
 
+// Flag to prevent reactivity loops and jitter during internal updates
+let isInternalUpdate = false;
+
 // Function to update the HSV state and sync others
 const updateHsv = (hsvUpdate: Partial<HsvColor>) => {
+  isInternalUpdate = true;
   const newHsv = { ...hsvRef.value, ...hsvUpdate };
   hsvRef.value = newHsv;
 
@@ -42,12 +46,19 @@ const updateHsv = (hsvUpdate: Partial<HsvColor>) => {
   }
 
   emit("change", newColor);
+  // Reset flag after the current tick to allow the watcher to skip
+  nextTick(() => {
+    isInternalUpdate = false;
+  });
 };
 
 // Sync internal hsvRef when the model changes externally
 watch(
   () => color.value,
   (newVal) => {
+    // Skip if this change originated from internal updateHsv to avoid jitter
+    if (isInternalUpdate) return;
+
     // If it's materially different, update our high-precision reference
     // but preserve Hue if it's a grayscale change
     const incomingHsv = newVal.hsv;
@@ -79,6 +90,10 @@ provide<ColorPickerContext>(COLOR_PICKER_KEY, {
   setPreviewColor: (newColor: ColorValue) => {
     previewColorRef.value = newColor;
   },
+});
+
+onUpdated(() => {
+  console.log("updated");
 });
 </script>
 

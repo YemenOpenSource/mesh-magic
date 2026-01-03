@@ -47,30 +47,32 @@ const indicatorPos = computed(() => {
 });
 
 const hueRef = ref<HTMLDivElement | null>(null);
-const { elementX, elementY, elementWidth, elementHeight } =
+const { elementX, elementY, elementWidth, elementHeight, isOutside } =
   useMouseInElement(hueRef);
 const isDragging = ref(false);
 
 const clamp = (v: number, a = 0, b = 1) => Math.max(a, Math.min(b, v));
 
+let rafId: number | null = null;
 // Update hue from pointer position
 const updateHueFromPosition = () => {
-  if (!colorPickerContext) return;
-  const w = elementWidth.value ?? 0;
-  const h = elementHeight.value ?? 0;
-  if (!w || !h) return;
+  if (!colorPickerContext || rafId || isOutside.value) return;
 
-  let percent = 0;
-  if (props.orientation === "horizontal") {
-    percent = clamp(elementX.value, 0, w) / w;
-  } else {
-    percent = clamp(elementY.value, 0, h) / h;
-  }
-
-  const hue = percent * 360;
-
-  // Update the interactive HSV state (maintains S/V/A)
-  colorPickerContext.setHsv({ h: hue });
+  rafId = requestAnimationFrame(() => {
+    const w = elementWidth.value ?? 0;
+    const h = elementHeight.value ?? 0;
+    if (w && h) {
+      let percent = 0;
+      if (props.orientation === "horizontal") {
+        percent = clamp(elementX.value, 0, w) / w;
+      } else {
+        percent = clamp(elementY.value, 0, h) / h;
+      }
+      const hue = percent * 360;
+      colorPickerContext.setHsv({ h: hue });
+    }
+    rafId = null;
+  });
 };
 
 const onPointerDown = (e?: PointerEvent) => {
@@ -118,6 +120,7 @@ useEventListener(window, "pointerup", onPointerUp);
       :style="{
         left: indicatorPos.left,
         top: indicatorPos.top,
+        backgroundColor: currentPreviewColor?.hex ?? '#000',
         touchAction: 'none',
         forcedColorAdjust: 'none',
         boxShadow: 'black 0px 0px 0px 1px, black 0px 0px 0px 1px inset',
