@@ -3,7 +3,7 @@ import { cn } from "~/lib/utils";
 import { Input } from "../input";
 import type { HTMLAttributes } from "vue";
 import { COLOR_PICKER_KEY, type ColorPickerContext } from "./types";
-import { isHexColorValid } from "./colorUtils";
+import { isHexColorValid } from "./color.utils";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];

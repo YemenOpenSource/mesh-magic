@@ -16,10 +16,18 @@ export type HsvColor = {
   a: number;
 };
 
+export type OklchColor = {
+  l: number;
+  c: number;
+  h: number;
+  a: number;
+};
+
 export type ColorValue = {
   hex: HexColor;
   rgb: RgbColor;
   hsv: HsvColor;
+  oklch: OklchColor;
 };
 
 // Props
