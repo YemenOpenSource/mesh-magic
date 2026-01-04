@@ -18,21 +18,17 @@ const sideOffset = computed(() => context?.popoverProps.sideOffset.value);
 
 <template>
   <PopoverContent
-    :as-child="true"
     :side="side"
     :align="align"
     :side-offset="sideOffset"
+    data-slot="card"
+    :class="
+      cn(
+        'w-64 bg-card text-card-foreground flex flex-col gap-4 rounded-xl border p-4 shadow-md focus:outline-none',
+        props.class,
+      )
+    "
   >
-    <div
-      data-slot="card"
-      :class="
-        cn(
-          'bg-card text-card-foreground flex flex-col gap-4 rounded-xl border p-4 shadow-md focus:outline-none',
-          props.class,
-        )
-      "
-    >
-      <slot />
-    </div>
+    <slot />
   </PopoverContent>
 </template>

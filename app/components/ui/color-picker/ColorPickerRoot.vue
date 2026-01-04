@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Popover } from "../popover";
-import { parseColor } from "./color.utils";
+import { formatColor, parseColor } from "./color.utils";
 
 import {
   COLOR_PICKER_KEY,
@@ -30,13 +30,7 @@ const color = computed<ColorValue>({
   },
   set: (val) => {
     if (typeof colorModel.value === "string") {
-      if (props.format === "rgb") {
-        colorModel.value = `rgba(${val.rgb.r}, ${val.rgb.g}, ${val.rgb.b}, ${val.rgb.a})`;
-      } else if (props.format === "hsv") {
-        colorModel.value = `hsva(${Math.round(val.hsv.h)}, ${Math.round(val.hsv.s * 100)}%, ${Math.round(val.hsv.v * 100)}%, ${val.hsv.a})`;
-      } else {
-        colorModel.value = val.hex;
-      }
+      colorModel.value = formatColor(val, props.format);
     } else {
       colorModel.value = val;
     }
@@ -156,6 +150,7 @@ provide<ColorPickerContext>(COLOR_PICKER_KEY, {
       :set-color="setColor"
       :set-preview-color="setPreviewColor"
       :open="openModel"
+      :format="props.format"
     />
   </Popover>
 </template>

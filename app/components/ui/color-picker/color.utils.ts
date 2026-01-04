@@ -70,12 +70,53 @@ export class Color {
   ): RgbColor | null {
     if (!color) return null;
     if (typeof color === "string") {
-      // Try hex or shorthand hex first
-      const hexResult = this.hexToRgb(color);
+      const trimmed = color.trim().toLowerCase();
+
+      // Try hex
+      const hexResult = this.hexToRgb(trimmed);
       if (hexResult) return hexResult;
 
-      // If not a valid hex, try resolving named color in browser only
-      const colorToHex = colorNameToHex(color);
+      // Try RGB(A) functional notation: rgb(r, g, b) or rgba(r, g, b, a)
+      const rgbMatch = trimmed.match(
+        /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+)\s*)?\)$/,
+      );
+      if (rgbMatch) {
+        return {
+          r: parseInt(rgbMatch[1]!, 10),
+          g: parseInt(rgbMatch[2]!, 10),
+          b: parseInt(rgbMatch[3]!, 10),
+          a: rgbMatch[4] ? parseFloat(rgbMatch[4]) : 1,
+        };
+      }
+
+      // Try HSV(A) functional notation: hsv(h, s%, v%)
+      const hsvMatch = trimmed.match(
+        /^hsva?\(\s*([\d.]+)\s*,\s*([\d.]+)%?\s*,\s*([\d.]+)%?\s*(?:,\s*([\d.]+)\s*)?\)$/,
+      );
+      if (hsvMatch) {
+        return this.hsvToRgb({
+          h: parseFloat(hsvMatch[1]!),
+          s: parseFloat(hsvMatch[2]!) / 100,
+          v: parseFloat(hsvMatch[3]!) / 100,
+          a: hsvMatch[4] ? parseFloat(hsvMatch[4]) : 1,
+        });
+      }
+
+      // Try OKLCH notation: oklch(l c h / a)
+      const oklchMatch = trimmed.match(
+        /^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*(?:\/\s*([\d.]+)\s*)?\)$/,
+      );
+      if (oklchMatch) {
+        return this.oklchToRgb({
+          l: parseFloat(oklchMatch[1]!),
+          c: parseFloat(oklchMatch[2]!),
+          h: parseFloat(oklchMatch[3]!),
+          a: oklchMatch[4] ? parseFloat(oklchMatch[4]) : 1,
+        });
+      }
+
+      // If not a valid hex or notation, try resolving named color
+      const colorToHex = colorNameToHex(trimmed);
       if (!colorToHex) return null;
       return this.hexToRgb(colorToHex);
     }
@@ -270,4 +311,35 @@ export const parseColor = (
     hsv: c.hsv,
     oklch: c.oklch,
   };
+};
+/**
+ * Formats a ColorValue into a string based on the requested format.
+ */
+export const formatColor = (
+  color: ColorValue,
+  format: "hex" | "rgb" | "hsv" | "oklch",
+): string => {
+  if (format === "rgb") {
+    const { r, g, b, a } = color.rgb;
+    return a < 1 ? `rgba(${r}, ${g}, ${b}, ${a})` : `rgb(${r}, ${g}, ${b})`;
+  }
+  if (format === "hsv") {
+    const { h, s, v, a } = color.hsv;
+    const h_ = Math.round(h);
+    const s_ = Math.round(s * 100);
+    const v_ = Math.round(v * 100);
+    return a < 1
+      ? `hsva(${h_}, ${s_}%, ${v_}%, ${a})`
+      : `hsv(${h_}, ${s_}%, ${v_}%)`;
+  }
+  if (format === "oklch") {
+    const { l, c, h, a } = color.oklch;
+    const l_ = l.toFixed(3);
+    const c_ = c.toFixed(3);
+    const h_ = Math.round(h);
+    return a < 1
+      ? `oklch(${l_} ${c_} ${h_} / ${a})`
+      : `oklch(${l_} ${c_} ${h_})`;
+  }
+  return color.hex;
 };
