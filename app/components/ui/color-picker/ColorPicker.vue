@@ -6,8 +6,6 @@ import {
   ColorPickerSaturation,
   ColorPickerHue,
   ColorPickerAlpha,
-  ColorPickerArea,
-  ColorPickerIndicator,
   ColorPickerInput,
   ColorPickerLabel,
   ColorPickerSwatch,
@@ -31,32 +29,11 @@ const emit = defineEmits<{
     v-model="modelValue"
     v-model:open="open"
     @change="(val) => emit('change', val)"
-    v-slot="{
-      hsv,
-      color: selectedColor,
-      previewColor,
-      setHsv,
-      format: currentFormat,
-    }"
+    v-slot="{ hsv, format: currentFormat }"
   >
     <ColorPickerPreview />
     <ColorPickerBody>
-      <ColorPickerSaturation class="overflow-hidden mb-2">
-        <ColorPickerArea
-          :x="hsv.s"
-          :y="1 - hsv.v"
-          label="Saturation and brightness"
-          :aria-value-text="`Saturation ${Math.round(hsv.s * 100)}%, Brightness ${Math.round(hsv.v * 100)}%`"
-          @change="({ x, y }) => setHsv({ s: x, v: 1 - y })"
-        >
-          <ColorPickerIndicator
-            :left="hsv.s * 100"
-            :top="(1 - hsv.v) * 100"
-            :color="selectedColor.hex"
-            class="size-4"
-          />
-        </ColorPickerArea>
-      </ColorPickerSaturation>
+      <ColorPickerSaturation class="mb-2" />
 
       <ColorPickerSection class="gap-4">
         <!-- Hue Slider -->
@@ -67,22 +44,7 @@ const emit = defineEmits<{
               {{ Math.round(hsv.h) }}°
             </ColorPickerLabel>
           </ColorPickerRow>
-          <ColorPickerHue orientation="horizontal" class="h-3 rounded-full">
-            <ColorPickerArea
-              :x="hsv.h / 360"
-              label="Hue"
-              orientation="horizontal"
-              :aria-value-text="`${Math.round(hsv.h)}°`"
-              @change="({ x }) => setHsv({ h: x * 360 })"
-            >
-              <ColorPickerIndicator
-                :left="(hsv.h / 360) * 100"
-                :top="50"
-                :color="previewColor.hex"
-                class="size-4"
-              />
-            </ColorPickerArea>
-          </ColorPickerHue>
+          <ColorPickerHue orientation="horizontal" class="h-3 rounded-full" />
         </ColorPickerSection>
 
         <!-- Alpha Slider -->
@@ -93,22 +55,7 @@ const emit = defineEmits<{
               {{ Math.round(hsv.a * 100) }}%
             </ColorPickerLabel>
           </ColorPickerRow>
-          <ColorPickerAlpha orientation="horizontal" class="h-3 rounded-full">
-            <ColorPickerArea
-              :x="hsv.a"
-              label="Alpha"
-              orientation="horizontal"
-              :aria-value-text="`${Math.round(hsv.a * 100)}%`"
-              @change="({ x }) => setHsv({ a: x })"
-            >
-              <ColorPickerIndicator
-                :left="hsv.a * 100"
-                :top="50"
-                :color="selectedColor.hex"
-                class="size-4"
-              />
-            </ColorPickerArea>
-          </ColorPickerAlpha>
+          <ColorPickerAlpha orientation="horizontal" class="h-3 rounded-full" />
         </ColorPickerSection>
 
         <!-- Input Section -->

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { cn } from "~/lib/utils";
-import type { HTMLAttributes } from "vue";
+import { inject, computed, type HTMLAttributes } from "vue";
+import { COLOR_PICKER_KEY, type ColorPickerContext } from "./types";
+import { ColorPickerArea, ColorPickerIndicator } from ".";
 
 const props = withDefaults(
   defineProps<{
@@ -12,6 +14,12 @@ const props = withDefaults(
     orientation: "horizontal",
   },
 );
+
+const context = inject<ColorPickerContext>(COLOR_PICKER_KEY);
+if (!context)
+  throw new Error("ColorPickerHue must be used within ColorPickerRoot");
+
+const { hsv, setHsv } = context;
 
 const backgroundStyle = computed(() => ({
   background: `linear-gradient(${
@@ -25,6 +33,16 @@ const backgroundStyle = computed(() => ({
     :class="cn('w-full rounded relative overflow-hidden', props.class)"
     :style="backgroundStyle"
   >
-    <slot />
+    <ColorPickerArea
+      :x="hsv.h / 360"
+      label="Hue"
+      :orientation="props.orientation"
+      :aria-value-text="`${Math.round(hsv.h)}°`"
+      @change="({ x }) => setHsv({ h: x * 360 })"
+    >
+      <slot>
+        <ColorPickerIndicator type="hue" class="size-4" />
+      </slot>
+    </ColorPickerArea>
   </div>
 </template>
