@@ -6,32 +6,49 @@ import {
   ColorPickerPreview,
   ColorPickerSaturation,
   ColorPickerHue,
+  ColorPickerArea,
+  ColorPickerIndicator,
 } from ".";
 import type { ColorValue } from "./types";
-import { Color, parseColor } from "./color.utils";
+import { parseColor } from "./color.utils";
 
-const test = new Color("green");
-const color = ref<ColorValue>(parseColor(test));
+const color = defineModel<ColorValue>({
+  default: () => parseColor("red"),
+});
 </script>
 
 <template>
-  <ColorPickerRoot v-model="color">
+  <ColorPickerRoot
+    v-model="color"
+    v-slot="{ hsv, color: selectedColor, previewColor, setHsv }"
+  >
     <ColorPickerPreview />
     <ColorPickerBody>
       <ColorPickerHeader>
-        <ColorPickerSaturation />
-        <ColorPickerHue />
+        <ColorPickerSaturation class="mb-4">
+          <ColorPickerArea @change="({ x, y }) => setHsv({ s: x, v: 1 - y })">
+            <ColorPickerIndicator
+              :left="hsv.s * 100"
+              :top="(1 - hsv.v) * 100"
+              :color="selectedColor.hex"
+            />
+          </ColorPickerArea>
+        </ColorPickerSaturation>
+
+        <div class="w-full flex justify-between">
+          <span>Hue:</span>
+          <span>{{ hsv.h }}°</span>
+        </div>
+        <ColorPickerHue orientation="horizontal">
+          <ColorPickerArea @change="({ x }) => setHsv({ h: x * 360 })">
+            <ColorPickerIndicator
+              :left="(hsv.h / 360) * 100"
+              :top="50"
+              :color="previewColor.hex"
+            />
+          </ColorPickerArea>
+        </ColorPickerHue>
       </ColorPickerHeader>
-
-      <!-- </ColorPickerHeader> -->
     </ColorPickerBody>
-    <!-- <ColorPickerSwatches />
-      <ColorPickerSaturation />
-
-
-
-      <ColorPickerHue />
-      <ColorPickerAlpha />
-      <ColorPickerInputs /> -->
   </ColorPickerRoot>
 </template>

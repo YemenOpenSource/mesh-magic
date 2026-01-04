@@ -29,6 +29,10 @@ let isInternalUpdate = false;
 const updateHsv = (hsvUpdate: Partial<HsvColor>) => {
   isInternalUpdate = true;
   const newHsv = { ...hsvRef.value, ...hsvUpdate };
+  if (hsvUpdate.h !== undefined) {
+    const hInt = Math.round(hsvUpdate.h);
+    newHsv.h = Math.max(0, Math.min(360, hInt));
+  }
   hsvRef.value = newHsv;
 
   // Derive the new ColorValue from this HSV
@@ -75,6 +79,15 @@ watch(
   { deep: true },
 );
 
+const setColor = (newColor: ColorValue) => {
+  color.value = newColor;
+  hsvRef.value = newColor.hsv;
+};
+
+const setPreviewColor = (newColor: ColorValue) => {
+  previewColorRef.value = newColor;
+};
+
 provide<ColorPickerContext>(COLOR_PICKER_KEY, {
   hsv: hsvRef,
   color: color,
@@ -83,24 +96,22 @@ provide<ColorPickerContext>(COLOR_PICKER_KEY, {
   emitColorChange: (newColor: ColorValue) => {
     emit("change", newColor);
   },
-  setColor: (newColor: ColorValue) => {
-    color.value = newColor;
-    hsvRef.value = newColor.hsv;
-  },
-  setPreviewColor: (newColor: ColorValue) => {
-    previewColorRef.value = newColor;
-  },
-});
-
-onUpdated(() => {
-  console.log("updated");
+  setColor,
+  setPreviewColor,
 });
 </script>
 
 <template>
   <section class="p-4 flex flex-col gap-4">
     <Popover as-child>
-      <slot />
+      <slot
+        :hsv="hsvRef"
+        :color="color"
+        :preview-color="previewColorRef"
+        :set-hsv="updateHsv"
+        :set-color="setColor"
+        :set-preview-color="setPreviewColor"
+      />
     </Popover>
   </section>
 </template>

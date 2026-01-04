@@ -196,7 +196,11 @@ export class Color {
   }
 
   private hsvToRgb(hsv: HsvColor): RgbColor {
-    const { h, s, v, a } = hsv;
+    let { h } = hsv;
+    const { s, v, a } = hsv;
+    h = h % 360;
+    if (h < 0) h += 360;
+
     const c = v * s;
     const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
     const m = v - c;
