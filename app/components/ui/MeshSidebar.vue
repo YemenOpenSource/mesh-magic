@@ -12,9 +12,6 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/vue";
 
-const SIDEBAR_NAME = "Mesh Gradient";
-const SIDEBAR_DESCRIPTION = "Your mesh with precision";
-
 type SidebarSection = {
   id: string;
   title: string;
@@ -69,8 +66,8 @@ const {
                 <HugeiconsIcon :icon="ColorsIcon" class="size-5" />
               </div>
               <div class="grid flex-1 text-left text-sm leading-tight">
-                <span class="truncate font-semibold">{{ SIDEBAR_NAME }}</span>
-                <span class="truncate text-xs">{{ SIDEBAR_DESCRIPTION }}</span>
+                <span class="truncate font-semibold">Mesh Gradient</span>
+                <p class="truncate text-sm">Your mesh with precision</p>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -116,27 +113,26 @@ const {
             </SidebarGroupLabel>
 
             <SidebarGroupContent class="space-y-4">
-              <ClientOnly>
-                <Transition name="fade" mode="out-in">
-                  <Accordion
-                    type="multiple"
-                    collapsible
-                    class="space-y-2"
-                    default-value="layer-1"
+              <Accordion type="multiple" collapsible default-value="layer-1">
+                <TransitionGroup class="space-y-2" name="fade" tag="div">
+                  <AccordionItem
+                    v-for="(layer, index) in config.layers"
+                    :key="layer.id"
+                    :value="`layer-${index + 1}`"
+                    class="border last:border-b-2"
                   >
-                    <AccordionItem
-                      v-for="(layer, index) in config.layers"
-                      :key="layer.id"
-                      :value="`layer-${index + 1}`"
-                      class="border last:border-b-2"
-                    >
+                    <ClientOnly>
+                      <template #placeholder>
+                        <div class="p-2">
+                          <Skeleton class="h-16 w-full" />
+                        </div>
+                      </template>
+
                       <!-- HEADER -->
                       <AccordionTrigger
                         class="p-2 hover:cursor-pointer hover:no-underline!"
                       >
-                        <span class="text-sm font-medium">
-                          Layer {{ index + 1 }}
-                        </span>
+                        <span class="text-sm font-medium"> Layer </span>
                       </AccordionTrigger>
 
                       <AccordionContent class="space-y-4 p-2">
@@ -222,10 +218,10 @@ const {
                           </Button>
                         </div>
                       </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                </Transition>
-              </ClientOnly>
+                    </ClientOnly>
+                  </AccordionItem>
+                </TransitionGroup>
+              </Accordion>
             </SidebarGroupContent>
           </SidebarGroup>
         </template>
@@ -261,7 +257,7 @@ const {
     </Sidebar>
     <SidebarInset>
       <SidebarTrigger
-        class="bg-sidebar-primary text-sidebar-primary-foreground absolute top-4 left-4 z-10 -ml-1 shadow md:hidden"
+        class="text-sidebar-primary-foreground absolute top-4 left-4 z-10 -ml-1 shadow"
       />
       <div class="flex flex-1 flex-col overflow-clip">
         <slot />
@@ -273,10 +269,21 @@ const {
 <style>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: all 0.3s ease;
 }
+
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+  transform: translateY(30px);
+}
+
+.fade-move {
+  transition: transform 0.3s ease;
+}
+
+.fade-leave-active {
+  position: absolute;
+  width: calc(100% - 2rem); /* Adjusted for sidebar padding if needed */
 }
 </style>

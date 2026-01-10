@@ -84,17 +84,16 @@ const makeLayer = (color?: ColorValue): Layer => {
 
 const config = ref<MeshConfig>({
   baseColor: parseColor(BASE_COLOR),
-  layers: [
-    {
-      blur: [0],
-      x: [0],
-      y: [0],
-      id: Date.now() + Math.random(),
-      color: parseColor(BASE_COLOR),
-      size: 0,
-      borderRadius: "",
-    },
-  ],
+  layers:
+    themes.cosmic?.map((c) => ({
+      id: Math.random() + Date.now(),
+      color: c,
+      x: [rand(35, 65)],
+      y: [rand(35, 65)],
+      size: rand(40, 50),
+      blur: [rand(80, 90)],
+      borderRadius: generateOrganicRadius(),
+    })) ?? [],
 });
 
 export function useMeshGradient() {
@@ -125,30 +124,31 @@ export function useMeshGradient() {
     const count = Math.floor(
       Math.random() * (maxLayers - minLayers + 1) + minLayers,
     );
-    config.value.layers = [];
+
+    const newLayers: Layer[] = [];
     for (let i = 0; i < count; i++) {
-      config.value.layers.push(makeLayer());
+      newLayers.push(makeLayer());
     }
+    config.value.layers = newLayers;
   };
 
   const applyTheme = (name: keyof typeof themes) => {
     const t = themes[name];
     if (!t) return;
-    config.value.layers = [];
-    t.forEach((c) => addLayer(c));
+    config.value.layers = t.map((c) => makeLayer(c));
   };
 
   const reset = (defaultBase = BASE_COLOR) => {
     config.value.baseColor = parseColor(defaultBase);
     if (themes.cosmic) {
-      config.value.layers = [];
-      (themes.cosmic as ColorValue[]).forEach((c) => addLayer(c));
+      config.value.layers = (themes.cosmic as ColorValue[]).map((c) =>
+        makeLayer(c),
+      );
     } else {
       randomize(3, 7);
     }
   };
 
-  reset();
   return {
     config,
     addLayer,
