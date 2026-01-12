@@ -38,7 +38,7 @@ const onDownloadImage = () => {
 </script>
 
 <template>
-  <div class="bg-background flex min-h-screen flex-col lg:flex-row">
+  <div class="bg-background flex min-h-dvh flex-col lg:flex-row">
     <!-- Preview -->
     <div
       class="relative order-2 flex flex-1 items-center justify-center overflow-hidden lg:order-1"

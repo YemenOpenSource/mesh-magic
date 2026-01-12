@@ -266,7 +266,7 @@ const {
       <SidebarTrigger
         class="text-sidebar-primary-foreground absolute top-4 left-4 z-10 -ml-1 shadow"
       />
-      <div class="flex min-h-screen flex-1 flex-col overflow-clip">
+      <div class="flex min-h-dvh flex-1 flex-col overflow-clip">
         <slot />
       </div>
     </SidebarInset>

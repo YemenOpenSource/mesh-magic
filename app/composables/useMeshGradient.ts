@@ -27,7 +27,7 @@ export const randomHex = () =>
     .toString(16)
     .padStart(6, "0")}`;
 
-const rand = (min: number, max: number) =>
+const randomNumber = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
 const generateOrganicRadius = () => {
@@ -39,23 +39,29 @@ const generateOrganicRadius = () => {
 const generateLayerId = () =>
   Date.now() * 1000 + Math.floor(Math.random() * 1000);
 
-const makeLayer = (color?: ColorValue, baseX?: number, baseY?: number): Layer => {
+const makeLayer = (
+  color?: ColorValue,
+  baseX?: number,
+  baseY?: number,
+): Layer => {
   // Simple random positioning like the old demo (0-80 range)
   // If baseX/baseY provided, use them with slight variation (±5)
-  const x = baseX !== undefined 
-    ? Math.max(0, Math.min(100, baseX + rand(-5, 5)))
-    : Math.floor(Math.random() * 80);
-  const y = baseY !== undefined
-    ? Math.max(0, Math.min(100, baseY + rand(-5, 5)))
-    : Math.floor(Math.random() * 80);
+  const x =
+    baseX !== undefined
+      ? Math.max(0, Math.min(100, baseX + randomNumber(-5, 5)))
+      : Math.floor(Math.random() * 80);
+  const y =
+    baseY !== undefined
+      ? Math.max(0, Math.min(100, baseY + randomNumber(-5, 5)))
+      : Math.floor(Math.random() * 80);
 
   return {
     id: generateLayerId(),
     color: color ?? parseColor(randomHex()),
     x: [x],
     y: [y],
-    size: rand(50, 90), // Like old demo: Math.floor(Math.random() * 40 + 50)
-    blur: [rand(80, 180)], // Like old demo: Math.floor(Math.random() * 100 + 80)
+    size: randomNumber(50, 90), // Like old demo: Math.floor(Math.random() * 40 + 50)
+    blur: [randomNumber(80, 180)], // Like old demo: Math.floor(Math.random() * 100 + 80)
     borderRadius: generateOrganicRadius(),
   };
 };
@@ -65,7 +71,7 @@ const makeLayer = (color?: ColorValue, baseX?: number, baseY?: number): Layer =>
 const generateInitialLayers = (): Layer[] => {
   const baseColors = themes.cosmic ?? [];
   const layers: Layer[] = [];
-  
+
   // Choose one random base position for all layers (like the old demo: 0-80 range)
   const baseX = Math.floor(Math.random() * 80);
   const baseY = Math.floor(Math.random() * 80);
