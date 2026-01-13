@@ -181,11 +181,16 @@ export function useMeshGradient() {
   };
 
   const copyMeshCSS = async () => {
-    const meshElemnt = document.getElementById("mesh-gradient");
-    if (!meshElemnt) return;
+    const element = document.getElementById("mesh-gradient");
+    if (!element) return;
 
-    const fullCSS = meshElemnt.getHTML();
-    await copyTextClient(fullCSS);
+    // Get the HTML directly from the element
+    element.classList.remove('size-full')
+    element.classList.add('w-screen')
+    element.classList.add('h-screen')
+    element.classList.add('overflow-clip')
+    const html = element.outerHTML
+    await copyTextClient(html);
     toast("Copied", {
       description: "Mesh CSS copied to clipboard",
       richColors: true,
