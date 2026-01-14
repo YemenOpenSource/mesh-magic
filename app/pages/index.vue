@@ -20,7 +20,16 @@ defineEmits<{
         :id="`layer-${layer.id}`"
         :key="layer.id"
         class="pointer-events-none absolute mix-blend-screen transition-all duration-700 ease-out"
-        :class="`w-[${layer.size}%] h-[${layer.size}%] left-[${layer.x[0]}%] top-[${layer.y[0]}%] blur-[${layer.blur[0]}px] rounded-[${layer.borderRadius}] opacity-80 bg-[${layer.color.hex}]`"
+        :style="{
+          width: layer.size + '%',
+          height: layer.size + '%',
+          left: layer.x[0] + '%',
+          top: layer.y[0] + '%',
+          backgroundColor: layer.color.hex,
+          filter: `blur(${layer.blur[0]}px)`,
+          borderRadius: layer.borderRadius,
+          opacity: 0.8,
+        }"
       />
     </ClientOnly>
 
