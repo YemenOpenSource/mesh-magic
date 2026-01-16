@@ -19,13 +19,12 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "@nuxt/test-utils/module",
     "v-gsap-nuxt",
-    // // seo modules
+    // seo modules
     //! "nuxt-schema-org",
-    // "nuxt-link-checker",
-    // "nuxt-og-image",
     "@nuxtjs/robots",
     "@nuxtjs/sitemap",
     "nuxt-seo-utils",
+    "nuxt-link-checker",
   ],
 
   colorMode: {
