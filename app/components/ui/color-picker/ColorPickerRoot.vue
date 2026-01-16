@@ -42,7 +42,11 @@ let isInternalUpdate = false;
 // Keeps track of the last known consistent state to detect external property changes
 const lastSyncedColor = ref<ColorValue>(parseColor(colorModel.value));
 
-const syncInternal = (newColor: ColorValue, updateModel = false) => {
+const syncInternal = (
+  newColor: ColorValue,
+  updateModel = false,
+  hsvOverride?: HsvColor,
+) => {
   isInternalUpdate = true;
   lastSyncedColor.value = JSON.parse(JSON.stringify(newColor));
 
@@ -57,14 +61,14 @@ const syncInternal = (newColor: ColorValue, updateModel = false) => {
 
   // Update Hue Slider base preview
   previewColorRef.value = parseColor({
-    h: newColor.hsv.h,
+    h: hsvOverride?.h ?? newColor.hsv.h,
     s: 1,
     v: 1,
     a: 1,
   });
 
   // Update Internal HSV (preserving resolution)
-  hsvRef.value = { ...newColor.hsv };
+  hsvRef.value = hsvOverride ? { ...hsvOverride } : { ...newColor.hsv };
 
   emit("change", newColor);
 
@@ -108,7 +112,7 @@ const updateHsv = (hsvUpdate: Partial<HsvColor>) => {
     newHsv.h = Math.max(0, Math.min(360, Math.round(hsvUpdate.h)));
   }
   const consistent = parseColor(newHsv);
-  syncInternal(consistent, true);
+  syncInternal(consistent, true, newHsv);
 };
 
 const setColor = (newColor: ColorValue | string) => {
