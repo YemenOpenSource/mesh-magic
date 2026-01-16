@@ -9,7 +9,6 @@ import {
 } from "~/components/sidebar";
 import { Input } from "~/components/ui/input";
 import { ColorPicker } from "~/components/ui/color-picker";
-import ExportActions from "~/components/ExportActions.vue";
 
 const config = reactive({
   baseColor1: parseColor("#4f46e5"),

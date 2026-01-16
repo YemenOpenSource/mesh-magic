@@ -59,19 +59,7 @@ useHead({
     // { rel: "manifest", href: "/site.webmanifest" },
     { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
   ],
-  script: [
-    {
-      type: "application/ld+json",
-      // If TypeScript complains about 'children' for script entries, cast this object to `any`.
-      children: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        name: defaultTitle,
-        url: siteUrl,
-        description: defaultDescription,
-      }),
-    } as any,
-  ],
+  
 });
 </script>
 

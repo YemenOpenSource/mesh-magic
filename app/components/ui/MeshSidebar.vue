@@ -11,7 +11,6 @@ import {
   Recycle03Icon,
   RepeatOne02Icon,
   SparklesIcon,
-  Svg01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/vue";
 import ModeToggle from "./ModeToggle.vue";
