@@ -20,12 +20,12 @@ export default defineNuxtConfig({
     "@nuxt/test-utils/module",
     "v-gsap-nuxt",
     // // seo modules
-    // "@nuxtjs/sitemap",
     // "nuxt-schema-org",
     // "nuxt-seo-utils",
     // "nuxt-link-checker",
     // "nuxt-og-image",
     "@nuxtjs/robots",
+    "@nuxtjs/sitemap",
   ],
 
   colorMode: {
@@ -48,8 +48,8 @@ export default defineNuxtConfig({
     componentDir: "@/components/ui",
   },
 
-  // site: {
-  //   url: "https://mesh-magic.netlify.app/",
-  //   name: "Mesh Magic",
-  // },
+  site: {
+    url: "https://mesh-magic.netlify.app/",
+    name: "Mesh Magic",
+  },
 });
