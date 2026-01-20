@@ -10,10 +10,6 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 - 🎯 **Precise Controls** - Adjust position, blur, size, and colors with pixel-perfect precision
 - 🌈 **Quick Themes** - Apply pre-defined color themes (Cosmic, Mystic, Sunset, Ocean, Forest, Aurora)
 - 🔄 **Real-time Preview** - See your changes instantly as you customize
-- 📱 **Responsive Design** - Works seamlessly on desktop and mobile devices
-- 🌙 **Dark Mode** - Beautiful dark theme optimized for your eyes
-- ⚡ **SSR Optimized** - Fast initial load with server-side rendering
-- 🎭 **Organic Shapes** - Generate beautiful organic border radius for natural-looking gradients
 
 ## Tech Stack
 
@@ -31,6 +27,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 **Goal:** Enable power users to interact faster with keyboard shortcuts.
 
 **Steps:**
+
 1. Use VueUse's `useMagicKeys` or `onKeyStroke` in the main layout or a composable.
 2. Define a map of shortcuts (e.g., `Ctrl+Z` for undo, `R` for randomize, `A` for add layer).
 3. Trigger the corresponding actions from `useMeshGradient` when keys are pressed.
@@ -44,6 +41,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 **Goal:** Allow users to revert and re-apply changes to the gradient configuration.
 
 **Steps:**
+
 1. Create a `useHistory<T>` composable with `past`, `present`, and `future` stacks.
 2. Integrate it into `useMeshGradient.ts`, wrapping the `config` ref.
 3. On every significant change (add/remove layer, color change, position change), push to history.
@@ -57,6 +55,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 **Goal:** Allow users to choose CSS blend modes (e.g., `multiply`, `screen`, `overlay`).
 
 **Steps:**
+
 1. Add a `blendMode` field to the `Layer` type.
 2. Create a `Select` dropdown with common blend modes in `LayersSection.vue`.
 3. Apply `mix-blend-mode` CSS to each layer in the gradient renderer.
@@ -68,6 +67,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 **Goal:** Animate layer positions, colors, or blur over time for a preview effect.
 
 **Steps:**
+
 1. Add a "Preview Animation" toggle button.
 2. When enabled, use `setInterval` or GSAP to animate layer properties.
 3. Define preset animations (e.g., "Pulse", "Drift", "Color Cycle").
@@ -81,6 +81,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 **Goal:** Persist user-created gradients locally for later use.
 
 **Steps:**
+
 1. Create a "Save" button in the sidebar.
 2. Serialize `config` to JSON and store in `localStorage` with a unique ID.
 3. Create a "My Gradients" section/modal listing saved items.
@@ -93,6 +94,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 **Goal:** Generate a shareable URL containing the gradient configuration.
 
 **Steps:**
+
 1. Serialize `config` to a JSON string.
 2. Compress using `LZString` or `pako` for URL-friendliness.
 3. Encode to Base64 and append to the URL as a query param (e.g., `?g=...`).
@@ -106,6 +108,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 **Goal:** Provide pre-configured layer setups users can apply instantly.
 
 **Steps:**
+
 1. Define template objects in a `presets.ts` file (e.g., "Sunset Glow", "Neon Burst").
 2. Create a "Templates" section in the sidebar with thumbnail previews.
 3. On click, replace or merge `config.layers` with the template's layers.
@@ -117,6 +120,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 **Goal:** Ensure smooth rendering even with 10+ layers.
 
 **Steps:**
+
 1. Debounce/throttle slider updates using VueUse's `useDebounceFn`.
 2. Use `v-memo` or `shallowRef` for layer arrays where deep reactivity isn't needed.
 3. Consider rendering layers to an offscreen canvas for heavy blur effects.
@@ -129,11 +133,11 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 **Goal:** Allow the base/background color to be any color, including white.
 
 **Steps:**
+
 1. Review `config.baseColor` initialization in `useMeshGradient.ts`.
 2. Ensure the color picker and hex input accept `#FFFFFF` without resetting.
 3. Test the rendering with white background to verify layer visibility.
 4. If layers are invisible on white, consider adding a subtle border or shadow.
-
 
 ## Getting Started
 
