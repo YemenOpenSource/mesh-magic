@@ -146,8 +146,11 @@ export function useMeshGradient() {
     config.value.layers = t.map((c) => makeLayer(c));
   };
 
-  const reset = (defaultBase = BASE_COLOR) => {
-    config.value.baseColor = parseColor(defaultBase);
+  const reset = () => {
+    alert("Resetting to default configuration.");
+    alert("Old base color " + config.value.baseColor.hex);
+    config.value.baseColor = parseColor(BASE_COLOR);
+    alert("New base color " + config.value.baseColor.hex);
     config.value.layers = generateInitialLayers();
   };
 

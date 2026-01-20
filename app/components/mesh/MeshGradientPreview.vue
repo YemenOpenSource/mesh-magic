@@ -11,17 +11,17 @@ function updateLayerPosition(index: number, x: number, y: number) {
 </script>
 
 <template>
-  <div
-    id="mesh-gradient"
-    class="relative size-full overflow-hidden"
-    :style="{ backgroundColor: config?.baseColor?.hex }"
-  >
+  <div id="mesh-gradient" class="relative size-full overflow-hidden">
     <!-- Gradient Layers -->
+    <div
+      class="absolute inset-0"
+      :style="{ backgroundColor: config?.baseColor?.hex }"
+    />
     <div
       v-for="layer in config.layers"
       :id="`layer-${layer.id}`"
       :key="layer.id"
-      class="pointer-events-none absolute mix-blend-screen transition-all duration-700 ease-out"
+      class="pointer-events-none absolute transition-all duration-500 ease-out"
       :style="{
         width: layer.size + '%',
         height: layer.size + '%',

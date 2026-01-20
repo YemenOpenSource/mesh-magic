@@ -39,7 +39,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 
 ---
 
-#### [ ] Undo/Redo functionality
+### [ ] Undo/Redo functionality
 
 **Goal:** Allow users to revert and re-apply changes to the gradient configuration.
 
@@ -52,19 +52,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 
 ---
 
-#### [x] Layer opacity control
-
-**Goal:** Allow users to adjust the transparency of each layer.
-
-**Steps:**
-1. Add an `opacity` field (0-1 or 0-100) to the `Layer` type in `useMeshGradient.ts`.
-2. Default new layers to `opacity: 1`.
-3. Add a `Slider` for opacity in `LayersSection.vue`.
-4. Update the mesh gradient rendering logic to apply `opacity` to each layer's CSS.
-
----
-
-#### [ ] Blend mode selection per layer
+### [ ] Blend mode selection per layer
 
 **Goal:** Allow users to choose CSS blend modes (e.g., `multiply`, `screen`, `overlay`).
 
@@ -75,7 +63,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 
 ---
 
-#### [ ] Gradient animation/transition preview
+### [ ] Gradient animation/transition preview
 
 **Goal:** Animate layer positions, colors, or blur over time for a preview effect.
 
@@ -88,7 +76,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 
 ---
 
-#### [ ] Save favorite gradients to localStorage
+### [ ] Save favorite gradients to localStorage
 
 **Goal:** Persist user-created gradients locally for later use.
 
@@ -100,7 +88,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 
 ---
 
-#### [ ] Share gradient via URL with encoded config
+### [ ] Share gradient via URL with encoded config
 
 **Goal:** Generate a shareable URL containing the gradient configuration.
 
@@ -113,7 +101,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 
 ---
 
-#### [ ] Layer templates/presets
+### [ ] Layer templates/presets
 
 **Goal:** Provide pre-configured layer setups users can apply instantly.
 
@@ -124,7 +112,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 
 ---
 
-#### [ ] Performance optimization for large layer counts
+### [ ] Performance optimization for large layer counts
 
 **Goal:** Ensure smooth rendering even with 10+ layers.
 
@@ -136,7 +124,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 
 ---
 
-#### [ ] Make sure to be able to change baseColor to white
+### [ ] Make sure to be able to change baseColor to white
 
 **Goal:** Allow the base/background color to be any color, including white.
 
