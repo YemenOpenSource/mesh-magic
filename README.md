@@ -26,21 +26,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 
 ## Feature Roadmap
 
-### [ ] Add draggable dots/controls on each layer for interactive positioning
-
-**Goal:** Allow users to click and drag layer control points directly on the mesh preview.
-
-**Steps:**
-1. Create a `LayerControlPoint.vue` component that renders a draggable dot.
-2. Use VueUse's `useDraggable` or `useMouseInElement` to track drag events.
-3. Pass the layer's `x` and `y` values to position the dot.
-4. On drag, emit an `update:position` event with normalized coordinates (0-100).
-5. Connect this to the `MeshGradient` component layered over the gradient preview.
-6. Update `useMeshGradient.ts` to accept position updates from the control points.
-
----
-
-#### [ ] Keyboard shortcuts for common actions
+### [ ] Keyboard shortcuts for common actions
 
 **Goal:** Enable power users to interact faster with keyboard shortcuts.
 
@@ -66,7 +52,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 
 ---
 
-#### [ ] Layer opacity control
+#### [x] Layer opacity control
 
 **Goal:** Allow users to adjust the transparency of each layer.
 

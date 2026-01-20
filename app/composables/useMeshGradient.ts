@@ -17,6 +17,7 @@ export type Layer = {
   x: number[];
   y: number[];
   blur: number[];
+  opacity: number[];
   size: number;
   borderRadius: string;
 };
@@ -49,8 +50,6 @@ const makeLayer = (
   baseX?: number,
   baseY?: number,
 ): Layer => {
-  // Simple random positioning like the old demo (0-80 range)
-  // If baseX/baseY provided, use them with slight variation (±5)
   const x =
     baseX !== undefined
       ? Math.max(0, Math.min(100, baseX + randomNumber(-5, 5)))
@@ -65,8 +64,9 @@ const makeLayer = (
     color: color ?? parseColor(randomHex()),
     x: [x],
     y: [y],
-    size: randomNumber(50, 90), // Like old demo: Math.floor(Math.random() * 40 + 50)
-    blur: [randomNumber(80, 180)], // Like old demo: Math.floor(Math.random() * 100 + 80)
+    opacity: [randomNumber(50, 100)],
+    size: randomNumber(50, 90),
+    blur: [randomNumber(80, 180)],
     borderRadius: generateOrganicRadius(),
   };
 };

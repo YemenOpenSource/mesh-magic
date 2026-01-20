@@ -30,7 +30,7 @@ function updateLayerPosition(index: number, x: number, y: number) {
         backgroundColor: layer.color.hex,
         filter: `blur(${layer.blur[0]}px)`,
         borderRadius: layer.borderRadius,
-        opacity: 0.8,
+        opacity: (layer.opacity[0] ?? 100) / 100,
       }"
     />
 

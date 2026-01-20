@@ -92,6 +92,19 @@ const { config, duplicateLayer, removeLayer, copyTextLayer } =
                 />
               </div>
 
+              <div class="space-y-1">
+                <div class="text-muted-foreground flex justify-between text-xs">
+                  <span>Opacity</span>
+                  <span>{{ layer.opacity[0] }}%</span>
+                </div>
+
+                <Slider
+                  v-model="config!.layers![index]!.opacity"
+                  :min="0"
+                  :max="100"
+                />
+              </div>
+
               <div class="flex w-full flex-wrap gap-1">
                 <Button
                   class="flex-1"
