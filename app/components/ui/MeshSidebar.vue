@@ -1,18 +1,14 @@
 <script setup lang="ts">
-import {
-  ColorsIcon,
-  ImageDownloadIcon,
-  PaintBoardIcon,
-} from "@hugeicons/core-free-icons";
+import { ColorsIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/vue";
 import ModeToggle from "./ModeToggle.vue";
-import BaseColorSection from "./mesh-sidebar/BaseColorSection.vue";
-import ThemesSection from "./mesh-sidebar/ThemesSection.vue";
-import LayersSection from "./mesh-sidebar/LayersSection.vue";
-import SidebarFooterActions from "./mesh-sidebar/SidebarFooterActions.vue";
-import DownloadDialog from "./mesh-sidebar/DownloadDialog.vue";
-
-const { copyMeshCSS } = useMeshGradient();
+import BaseColorSection from "./partials/BaseColorSection.vue";
+import ThemesSection from "./partials/ThemesSection.vue";
+import LayersSection from "./partials/LayersSection.vue";
+import SidebarFooterActions from "./partials/SidebarFooterActions.vue";
+import DownloadDialog from "./partials/DownloadDialog.vue";
+import CopyMeshCssButton from "./partials/CopyMeshCssButton.vue";
+import DownloadMeshButton from "./partials/DownloadMeshButton.vue";
 
 const showDownloadImageSizeDialog = ref(false);
 </script>
@@ -66,54 +62,11 @@ const showDownloadImageSizeDialog = ref(false);
       <SidebarRail />
     </Sidebar>
     <SidebarInset class="relative">
-      <div class="relative">
-        <SidebarTrigger
-          class="text-sidebar-primary-foreground absolute top-4 left-4 z-10 -ml-1 size-4.5 shadow"
-        />
+      <div class="absolute top-4 left-4 z-10 flex items-center gap-2">
+        <SidebarTrigger class="text-sidebar-primary-foreground shadow" />
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger as-child>
-              <Button
-                aria-label="copy-mesh-css-button"
-                aria-labelledby="copy-mesh-css-button"
-                data-sidebar="trigger"
-                data-slot="sidebar-trigger"
-                variant="ghost"
-                size="icon"
-                class="text-sidebar-primary-foreground absolute top-4 left-11 z-10 -ml-1 size-4.5 shadow"
-                @click="copyMeshCSS"
-              >
-                <HugeiconsIcon :icon="PaintBoardIcon" class="size-4.5" />
-                <span class="sr-only">Toggle Sidebar</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Copy Mesh CSS</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger as-child>
-              <Button
-                aria-label="download-mesh-button"
-                aria-labelledby="download-mesh-button"
-                data-sidebar="trigger"
-                data-slot="sidebar-trigger"
-                variant="ghost"
-                size="icon"
-                class="text-sidebar-primary-foreground absolute top-4 left-18 z-10 -ml-1 size-4.5 shadow"
-                @click="showDownloadImageSizeDialog = true"
-              >
-                <HugeiconsIcon :icon="ImageDownloadIcon" class="size-4.5" />
-                <span class="sr-only">Toggle Sidebar</span>
-              </Button>
-
-              <span class="sr-only">Download Mesh</span>
-            </TooltipTrigger>
-            <TooltipContent>Download Mesh</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <CopyMeshCssButton />
+        <DownloadMeshButton @click="showDownloadImageSizeDialog = true" />
       </div>
       <div class="flex min-h-dvh flex-1 flex-col overflow-clip">
         <slot />

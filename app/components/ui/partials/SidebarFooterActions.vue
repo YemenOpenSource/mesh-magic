@@ -5,7 +5,6 @@ import {
   Recycle03Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/vue";
-import { cn } from "~/lib/utils";
 
 const { addLayer, reset, randomize } = useMeshGradient();
 </script>
@@ -33,21 +32,15 @@ const { addLayer, reset, randomize } = useMeshGradient();
         <HugeiconsIcon :icon="Recycle03Icon" size="4" />
         Reset
       </Button>
-      <Button
-        aria-label="randomize-button"
-        aria-labelledby="randomize-button"
-        class="flex-2 transition-colors"
-        variant="ghost"
-        :class="
-          cn(
-            'bg-white text-black hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800',
-          )
-        "
-        @click="randomize()"
-      >
-        <HugeiconsIcon :icon="ArrowDataTransferHorizontalIcon" size="4" />
-        Randomize
-      </Button>
     </ButtonGroup>
+    <Button
+      aria-label="randomize-button"
+      aria-labelledby="randomize-button"
+      class="w-full flex-2"
+      @click="randomize()"
+    >
+      <HugeiconsIcon :icon="ArrowDataTransferHorizontalIcon" size="4" />
+      Randomize
+    </Button>
   </div>
 </template>
