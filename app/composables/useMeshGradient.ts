@@ -96,6 +96,7 @@ export function useMeshGradient() {
     baseColor: parseColor(BASE_COLOR),
     layers: generateInitialLayers(),
   }));
+  const showDots = useState("show-dots", () => true);
 
   const addLayer = (color?: ColorValue) => {
     if (config.value.layers.length === maxLayerCount.value) return;
@@ -297,6 +298,7 @@ export function useMeshGradient() {
 
   return {
     config,
+    showDots,
     addLayer,
     removeLayer,
     duplicateLayer,

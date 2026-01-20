@@ -26,15 +26,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 
 ## Feature Roadmap
 
-### Mesh Gradient
-
-- [x] Download gradient as image (PNG/JPG) with resolution (scale).
-- [x] Sidebar auto-toggle during download for clean capture
-- [x] Refactor sidebar into organized folder structure
-
----
-
-#### [ ] Add draggable dots/controls on each layer for interactive positioning
+### [ ] Add draggable dots/controls on each layer for interactive positioning
 
 **Goal:** Allow users to click and drag layer control points directly on the mesh preview.
 

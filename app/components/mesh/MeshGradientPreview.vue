@@ -1,0 +1,55 @@
+<script setup lang="ts">
+import LayerControlPoint from "./LayerControlPoint.vue";
+
+const { config, showDots } = useMeshGradient();
+
+function updateLayerPosition(index: number, x: number, y: number) {
+  if (!config.value || !config.value.layers[index]) return;
+  config.value.layers[index].x[0] = x;
+  config.value.layers[index].y[0] = y;
+}
+</script>
+
+<template>
+  <div
+    id="mesh-gradient"
+    class="relative size-full overflow-hidden"
+    :style="{ backgroundColor: config?.baseColor?.hex }"
+  >
+    <!-- Gradient Layers -->
+    <div
+      v-for="layer in config.layers"
+      :id="`layer-${layer.id}`"
+      :key="layer.id"
+      class="pointer-events-none absolute mix-blend-screen transition-all duration-700 ease-out"
+      :style="{
+        width: layer.size + '%',
+        height: layer.size + '%',
+        left: layer.x[0] + '%',
+        top: layer.y[0] + '%',
+        backgroundColor: layer.color.hex,
+        filter: `blur(${layer.blur[0]}px)`,
+        borderRadius: layer.borderRadius,
+        opacity: 0.8,
+      }"
+    />
+
+    <!-- Grain Texture Overlay -->
+    <div
+      class="pointer-events-none absolute inset-0 bg-[url('/noise.svg')] opacity-[0.15] mix-blend-overlay"
+    />
+
+    <!-- Control Points (Overlay) -->
+    <!-- We render these on top of the noise/gradient -->
+    <div v-if="config && showDots" class="absolute inset-0 z-10 size-full">
+      <LayerControlPoint
+        v-for="(layer, index) in config.layers"
+        :key="`control-${layer.id}`"
+        :x="layer.x[0] ?? 0"
+        :y="layer.y[0] ?? 0"
+        :color="layer.color?.hex"
+        @update:position="(x, y) => updateLayerPosition(index, x, y)"
+      />
+    </div>
+  </div>
+</template>

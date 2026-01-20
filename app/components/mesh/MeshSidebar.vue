@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ColorsIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/vue";
-import ModeToggle from "./ModeToggle.vue";
+import ModeToggle from "../ui/ModeToggle.vue";
 import BaseColorSection from "./partials/BaseColorSection.vue";
 import ThemesSection from "./partials/ThemesSection.vue";
 import LayersSection from "./partials/LayersSection.vue";
@@ -11,6 +11,8 @@ import CopyMeshCssButton from "./partials/CopyMeshCssButton.vue";
 import DownloadMeshButton from "./partials/DownloadMeshButton.vue";
 
 const showDownloadImageSizeDialog = ref(false);
+
+const { showDots } = useMeshGradient();
 </script>
 
 <template>
@@ -52,7 +54,15 @@ const showDownloadImageSizeDialog = ref(false);
       <SidebarContent>
         <BaseColorSection />
         <Separator class="my-2" />
+        <SidebarGroup>
+          <div class="flex items-center gap-2">
+            <Checkbox v-model="showDots" id="show-dots" />
+            <Label for="show-dots">Show Controls</Label>
+          </div>
+        </SidebarGroup>
+
         <ThemesSection />
+
         <LayersSection />
       </SidebarContent>
       <SidebarFooter>
