@@ -7,19 +7,34 @@ import type {
 } from "./types";
 
 /**
- * Supported color format regexes
+ * Regular expression for validating hexadecimal color strings.
+ * Supports #RGB, #RGBA, #RRGGBB, and #RRGGBBAA formats.
  */
 export const HEX_REGEX =
   /^#([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{4}|[A-Fa-f0-9]{3})$/;
+
+/**
+ * Regular expression for validating RGB and RGBA color strings.
+ */
 export const RGB_REGEX =
   /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+)\s*)?\)$/;
+
+/**
+ * Regular expression for validating HSV and HSVA color strings.
+ */
 export const HSV_REGEX =
   /^hsva?\(\s*([\d.]+)\s*,\s*([\d.]+)%?\s*,\s*([\d.]+)%?\s*(?:,\s*([\d.]+)\s*)?\)$/;
+
+/**
+ * Regular expression for validating OKLCH color strings.
+ */
 export const OKLCH_REGEX =
   /^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*(?:\/\s*([\d.]+)\s*)?\)$/;
 
 /**
  * Validates whether a given string is a standard CSS hexadecimal color.
+ * @param hex - The hexadecimal string to validate.
+ * @returns True if the string is a valid hex color, false otherwise.
  */
 export const isHexColorValid = (hex: HexColor): boolean => {
   return HEX_REGEX.test(hex);
@@ -27,6 +42,9 @@ export const isHexColorValid = (hex: HexColor): boolean => {
 
 /**
  * Validates whether a given string matches a specific color format.
+ * @param value - The color string to validate.
+ * @param format - Optional specific format to check against.
+ * @returns True if the value is a valid color in the specified (or any supported) format.
  */
 export const isValidColor = (
   value: string,
@@ -58,38 +76,39 @@ export const isValidColor = (
   }
 };
 
-// Cache for color name to hex conversions
 const colorNameCache = new Map<string, HexColor>();
 
 /**
- * Resolves a CSS color name to its hexadecimal value using the browser's engine.
- * Uses caching to avoid repeated canvas operations.
+ * Resolves a CSS color name (like 'red') to its hexadecimal value.
+ * @param colorName - The CSS color name to resolve.
+ * @returns The hexadecimal color string, or null if resolution fails.
  */
 const colorNameToHex = (colorName: string): HexColor | null => {
   if (typeof document === "undefined") return null;
-  
+
   const normalizedName = colorName.toLowerCase().trim();
   if (colorNameCache.has(normalizedName)) {
     return colorNameCache.get(normalizedName)!;
   }
-  
+
   const ctx = document.createElement("canvas");
   const context = ctx.getContext("2d");
   if (!context) return null;
   context.fillStyle = normalizedName;
   const returnedColor = context.fillStyle as HexColor;
   ctx.remove();
-  
-  // Only cache if it's a valid hex color
+
   if (returnedColor && returnedColor.startsWith("#")) {
     colorNameCache.set(normalizedName, returnedColor);
   }
-  
+
   return returnedColor;
 };
 
 /**
- * Helper: Converts sRGB (0-255) to Linear sRGB (0-1).
+ * Converts sRGB component (0-255) to Linear sRGB (0-1).
+ * @param c - The color component value (0-255).
+ * @returns The linear component value (0-1).
  */
 const sRgbToLinear = (c: number): number => {
   const v = c / 255;
@@ -97,15 +116,20 @@ const sRgbToLinear = (c: number): number => {
 };
 
 /**
- * Helper: Converts Linear sRGB (0-1) back to gamma-corrected sRGB (0-255).
+ * Converts Linear sRGB component (0-1) to gamma-corrected sRGB (0-255).
+ * @param c - The linear component value (0-1).
+ * @returns The sRGB component value (0-255).
  */
 const linearToSRgb = (c: number): number => {
   const v = c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
   return Math.max(0, Math.min(255, Math.round(v * 255)));
 };
 
-// --- Converters ---
-
+/**
+ * Converts a hexadecimal color string to an RgbColor object.
+ * @param hex - The hex color string to convert.
+ * @returns An RgbColor object, or null if the hex string is invalid.
+ */
 export const hexToRgb = (hex: HexColor): RgbColor | null => {
   if (!isHexColorValid(hex)) {
     const colorHex = colorNameToHex(hex);
@@ -142,6 +166,11 @@ export const hexToRgb = (hex: HexColor): RgbColor | null => {
   return null;
 };
 
+/**
+ * Converts an HsvColor object to an RgbColor object.
+ * @param hsv - The HSV color to convert.
+ * @returns The converted RgbColor.
+ */
 export const hsvToRgb = (hsv: HsvColor): RgbColor => {
   let { h } = hsv;
   const { s, v, a } = hsv;
@@ -170,6 +199,11 @@ export const hsvToRgb = (hsv: HsvColor): RgbColor => {
   };
 };
 
+/**
+ * Converts an OklchColor object to an RgbColor object.
+ * @param oklch - The OKLCH color to convert.
+ * @returns The converted RgbColor.
+ */
 export const oklchToRgb = (oklch: OklchColor): RgbColor => {
   const { l: L, c: C, h: H, a } = oklch;
   const hRad = H * (Math.PI / 180);
@@ -196,6 +230,11 @@ export const oklchToRgb = (oklch: OklchColor): RgbColor => {
   };
 };
 
+/**
+ * Converts an RgbColor object to a hexadecimal color string.
+ * @param rgb - The RGB color to convert.
+ * @returns The hexadecimal color string.
+ */
 export const rgbToHex = (rgb: RgbColor): HexColor => {
   const { r, g, b, a } = rgb;
   const redHex = r.toString(16).padStart(2, "0");
@@ -210,6 +249,11 @@ export const rgbToHex = (rgb: RgbColor): HexColor => {
   return `#${redHex}${greenHex}${blueHex}${alphaHex}`;
 };
 
+/**
+ * Converts an RgbColor object to an HsvColor object.
+ * @param rgb - The RGB color to convert.
+ * @returns The converted HsvColor.
+ */
 export const rgbToHsv = (rgb: RgbColor): HsvColor => {
   const { r, g, b, a } = rgb;
   const rNorm = r / 255;
@@ -239,6 +283,11 @@ export const rgbToHsv = (rgb: RgbColor): HsvColor => {
   return { h, s, v, a };
 };
 
+/**
+ * Converts an RgbColor object to an OklchColor object.
+ * @param rgb - The RGB color to convert.
+ * @returns The converted OklchColor.
+ */
 export const rgbToOklch = (rgb: RgbColor): OklchColor => {
   const r = sRgbToLinear(rgb.r);
   const g = sRgbToLinear(rgb.g);
@@ -266,6 +315,11 @@ export const rgbToOklch = (rgb: RgbColor): OklchColor => {
   return { l: L, c: C, h, a: rgb.a };
 };
 
+/**
+ * Parses various color inputs into an RgbColor object.
+ * @param color - The color input (string, object, or ColorValue).
+ * @returns An RgbColor object, or null if the input is invalid.
+ */
 export const parseToRgb = (
   color: HexColor | RgbColor | HsvColor | OklchColor | ColorValue,
 ): RgbColor | null => {
@@ -273,11 +327,9 @@ export const parseToRgb = (
   if (typeof color === "string") {
     const trimmed = color.trim().toLowerCase();
 
-    // Try hex
     const hexResult = hexToRgb(trimmed);
     if (hexResult) return hexResult;
 
-    // Try RGB(A) functional notation
     const rgbMatch = trimmed.match(RGB_REGEX);
     if (rgbMatch) {
       return {
@@ -288,7 +340,6 @@ export const parseToRgb = (
       };
     }
 
-    // Try HSV(A) functional notation
     const hsvMatch = trimmed.match(HSV_REGEX);
     if (hsvMatch) {
       return hsvToRgb({
@@ -299,7 +350,6 @@ export const parseToRgb = (
       });
     }
 
-    // Try OKLCH notation
     const oklchMatch = trimmed.match(OKLCH_REGEX);
     if (oklchMatch) {
       return oklchToRgb({
@@ -310,7 +360,6 @@ export const parseToRgb = (
       });
     }
 
-    // If not a valid hex or notation, try resolving named color
     const colorToHex = colorNameToHex(trimmed);
     if (!colorToHex) return null;
     return hexToRgb(colorToHex);
@@ -333,22 +382,21 @@ export const parseToRgb = (
   return null;
 };
 
-// Cache for parsed colors (key is hex string)
 const parsedColorCache = new Map<string, ColorValue>();
 
 /**
- * Convenient short-hands
- * Uses caching to avoid recomputing color conversions
+ * Parses color input into a comprehensive ColorValue object.
+ * Uses internal caching for efficiency.
+ * @param color - The color input to parse.
+ * @returns A ColorValue object containing all supported formats.
  */
 export const parseColor = (
   color: HexColor | HsvColor | RgbColor | OklchColor | ColorValue,
 ): ColorValue => {
-  // If already a ColorValue, return as-is
   if (typeof color === "object" && "hex" in color && "rgb" in color) {
     return color;
   }
 
-  // Try to get cached value
   let cacheKey: string | null = null;
   if (typeof color === "string") {
     cacheKey = color.toLowerCase().trim();
@@ -356,7 +404,6 @@ export const parseColor = (
       return parsedColorCache.get(cacheKey)!;
     }
   } else if ("r" in color && "g" in color && "b" in color) {
-    // RGB object - use hex as cache key
     cacheKey = rgbToHex(color as RgbColor);
     if (parsedColorCache.has(cacheKey)) {
       return parsedColorCache.get(cacheKey)!;
@@ -372,7 +419,6 @@ export const parseColor = (
     oklch: rgbToOklch(rgb),
   };
 
-  // Cache the result using hex as key
   if (cacheKey) {
     parsedColorCache.set(cacheKey, result);
   }
@@ -383,6 +429,9 @@ export const parseColor = (
 
 /**
  * Formats a ColorValue into a string based on the requested format.
+ * @param color - The ColorValue to format.
+ * @param format - The desired output format ('hex', 'rgb', 'hsv', or 'oklch').
+ * @returns A string representation of the color in the requested format.
  */
 export const formatColor = (
   color: ColorValue,

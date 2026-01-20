@@ -39,9 +39,8 @@ function updateLayerPosition(index: number, x: number, y: number) {
       class="pointer-events-none absolute inset-0 bg-[url('/noise.svg')] opacity-[0.15] mix-blend-overlay"
     />
 
-    <!-- Control Points (Overlay) -->
-    <!-- We render these on top of the noise/gradient -->
-    <div v-if="config && showDots" class="absolute inset-0 z-10 size-full">
+    <!-- Control Points -->
+    <template v-if="config && showDots">
       <LayerControlPoint
         v-for="(layer, index) in config.layers"
         :key="`control-${layer.id}`"
@@ -50,6 +49,6 @@ function updateLayerPosition(index: number, x: number, y: number) {
         :color="layer.color?.hex"
         @update:position="(x, y) => updateLayerPosition(index, x, y)"
       />
-    </div>
+    </template>
   </div>
 </template>

@@ -10,7 +10,7 @@ const emit = defineEmits<{
   (e: "update:open", value: boolean): void;
 }>();
 
-const { downloadMeshImage } = useMeshGradient();
+const { downloadMeshImage, showDots } = useMeshGradient();
 const sidebar = useSidebar();
 
 const downloadImageLoading = ref(false);
@@ -38,6 +38,7 @@ const handleDownload = async () => {
   const wasOpen = sidebar.isMobile.value
     ? sidebar.openMobile.value
     : sidebar.open.value;
+  const wasShowDots = showDots.value;
 
   // Close sidebar
   if (sidebar.isMobile.value) {
@@ -45,6 +46,8 @@ const handleDownload = async () => {
   } else {
     sidebar.setOpen(false);
   }
+  // Hide dots
+  showDots.value = false;
 
   // Wait for sidebar transition (typical shadcn/tailwind transitions are 200-300ms)
   const { start } = useTimeoutFn(async () => {
@@ -64,6 +67,8 @@ const handleDownload = async () => {
           }
         }
         downloadImageLoading.value = false;
+        // Restore dots
+        showDots.value = wasShowDots;
         emit("update:open", false);
       },
     );

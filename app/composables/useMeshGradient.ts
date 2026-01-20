@@ -8,43 +8,85 @@ import { toPng, toJpeg, toSvg } from "html-to-image";
 
 const BASE_COLOR = "#020617";
 const DEFAULT_LAYER_COUNT = 4;
+
+/**
+ * The maximum number of layers allowed in the mesh gradient.
+ */
 export const maxLayerCount = ref(8);
 
-/* Types */
+/**
+ * Represents a single layer in the mesh gradient.
+ */
 export type Layer = {
+  /** Unique identifier for the layer. */
   id: number;
+  /** Color value of the layer. */
   color: ColorValue;
+  /** X-coordinate position (percentage). */
   x: number[];
+  /** Y-coordinate position (percentage). */
   y: number[];
+  /** Blur amount (pixels). */
   blur: number[];
+  /** Opacity value (percentage). */
   opacity: number[];
+  /** Size of the layer (pixels). */
   size: number;
+  /** CSS border-radius value. */
   borderRadius: string;
 };
 
+/**
+ * Configuration for the entire mesh gradient.
+ */
 export type MeshConfig = {
+  /** The base background color. */
   baseColor: ColorValue;
+  /** Collection of layers. */
   layers: Layer[];
 };
 
-/* Helpers */
+/**
+ * Generates a random hexadecimal color string.
+ * @returns A random hex color string (e.g., "#3a7f21").
+ */
 export const randomHex = () =>
   `#${Math.floor(Math.random() * 16777215)
     .toString(16)
     .padStart(6, "0")}`;
 
+/**
+ * Generates a random integer between min and max (inclusive).
+ * @param min - Minimum value.
+ * @param max - Maximum value.
+ * @returns A random integer.
+ */
 const randomNumber = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
+/**
+ * Generates an organic-looking CSS border-radius string.
+ * @returns A string representing a complex border-radius.
+ */
 const generateOrganicRadius = () => {
   const r = () => Math.floor(Math.random() * 50 + 30) + "%";
   return `${r()} ${r()} ${r()} ${r()} / ${r()} ${r()} ${r()} ${r()}`;
 };
 
-// Generate unique layer IDs using timestamp + random for uniqueness
+/**
+ * Generates a unique layer ID using a timestamp and random component.
+ * @returns A unique numeric ID.
+ */
 const generateLayerId = () =>
   Date.now() * 1000 + Math.floor(Math.random() * 1000);
 
+/**
+ * Creates a new Layer object with default or specified properties.
+ * @param color - Optional initial color.
+ * @param baseX - Optional base X position.
+ * @param baseY - Optional base Y position.
+ * @returns A new Layer instance.
+ */
 const makeLayer = (
   color?: ColorValue,
   baseX?: number,
@@ -71,13 +113,14 @@ const makeLayer = (
   };
 };
 
-// Generate 4 random layers for initial state
-// All layers positioned in the same area (same base position with slight variations)
+/**
+ * Generates the initial collection of layers based on a theme.
+ * @returns An array of Layer objects.
+ */
 const generateInitialLayers = (): Layer[] => {
   const baseColors = themes.cosmic ?? [];
   const layers: Layer[] = [];
 
-  // Choose one random base position for all layers (like the old demo: 0-80 range)
   const baseX = Math.floor(Math.random() * 80);
   const baseY = Math.floor(Math.random() * 80);
 
@@ -89,24 +132,37 @@ const generateInitialLayers = (): Layer[] => {
   return layers;
 };
 
+/**
+ * Composable that manages the state and operations for the mesh gradient.
+ */
 export function useMeshGradient() {
-  // Use useState for SSR-safe state - ensures same state on server and client
-  // The initializer runs only once (on server or first client render)
   const config = useState<MeshConfig>("mesh-gradient-config", () => ({
     baseColor: parseColor(BASE_COLOR),
     layers: generateInitialLayers(),
   }));
   const showDots = useState("show-dots", () => true);
 
+  /**
+   * Adds a new layer to the gradient.
+   * @param color - Optional initial color for the new layer.
+   */
   const addLayer = (color?: ColorValue) => {
     if (config.value.layers.length === maxLayerCount.value) return;
     config.value.layers.push(makeLayer(color));
   };
 
+  /**
+   * Removes a layer at the specified index.
+   * @param index - The index of the layer to remove.
+   */
   const removeLayer = (index: number) => {
     config.value.layers.splice(index, 1);
   };
 
+  /**
+   * Duplicates an existing layer.
+   * @param index - The index of the layer to duplicate.
+   */
   const duplicateLayer = (index: number) => {
     if (config.value.layers.length === maxLayerCount.value) return;
 
@@ -116,10 +172,21 @@ export function useMeshGradient() {
     config.value.layers.splice(index + 1, 0, dup);
   };
 
+  /**
+   * Updates an existing layer.
+   * @param index - The index of the layer to update.
+   * @param layer - The new layer data.
+   */
   const updateLayer = (index: number, layer: Layer) => {
     config.value.layers.splice(index, 1, layer);
   };
 
+  /**
+   * Randomizes the gradient configuration.
+   * @param minLayers - Minimum number of layers to generate.
+   * @param maxLayers - Maximum number of layers to generate.
+   * @param newBaseColor - Optional new background color.
+   */
   const randomize = (
     minLayers = 1,
     maxLayers = maxLayerCount.value,
@@ -140,30 +207,36 @@ export function useMeshGradient() {
     config.value.layers = newLayers;
   };
 
+  /**
+   * Applies a predefined theme to the gradient.
+   * @param name - The name of the theme to apply.
+   */
   const applyTheme = (name: keyof typeof themes) => {
     const t = themes[name];
     if (!t) return;
     config.value.layers = t.map((c) => makeLayer(c));
   };
 
+  /**
+   * Resets the gradient to its default state.
+   */
   const reset = () => {
-    alert("Resetting to default configuration.");
-    alert("Old base color " + config.value.baseColor.hex);
     config.value.baseColor = parseColor(BASE_COLOR);
-    alert("New base color " + config.value.baseColor.hex);
     config.value.layers = generateInitialLayers();
   };
 
+  /**
+   * Copies the HTML snippet of a single layer to the clipboard.
+   * @param layer - The layer to copy.
+   */
   const copyTextLayer = async (layer: Layer) => {
     const x = layer.x?.[0] ?? 0;
     const y = layer.y?.[0] ?? 0;
     const size = layer.size ?? 64;
     const colorHex = (layer.color?.hex ?? "#000000").toLowerCase();
-    // Tailwind arbitrary brackets can't contain spaces in the class name, so replace spaces w/ underscores
     const brRaw = layer.borderRadius ?? "50%";
     const brForClass = brRaw.replace(/\s+/g, "_");
 
-    // Build classes
     const classes = [
       "absolute",
       `left-[${x}%]`,
@@ -184,22 +257,22 @@ export function useMeshGradient() {
     });
   };
 
+  /**
+   * Copies the full mesh gradient HTML and CSS to the clipboard.
+   */
   const copyMeshCSS = async () => {
     const element = document.getElementById("mesh-gradient");
     if (!element) return;
 
-    // Get the current origin/base URL for the noise.svg
     const baseUrl = window.location.origin;
     const noiseSvgUrl = `${baseUrl}/noise.svg`;
 
-    // Get the HTML directly from the element
     element.classList.remove("size-full");
     element.classList.add("w-screen");
     element.classList.add("h-screen");
     element.classList.add("overflow-clip");
     let html = element.outerHTML;
 
-    // Replace the relative noise.svg path with the full URL
     html = html.replace(
       /url\(['"]?\/noise\.svg['"]?\)/g,
       `url('${noiseSvgUrl}')`,
@@ -212,6 +285,11 @@ export function useMeshGradient() {
     });
   };
 
+  /**
+   * Downloads the mesh gradient as an image file.
+   * @param options - Configuration for the download (scale, aspect ratio, format).
+   * @param onFinish - Optional callback when the download is complete.
+   */
   const downloadMeshImage = async (
     {
       scale = 1,
@@ -227,31 +305,27 @@ export function useMeshGradient() {
     const element = document.getElementById("mesh-gradient");
     if (!element) return;
 
-    // Wait for next tick to ensure element is fully rendered
     await nextTick();
 
-    // Get the element's actual displayed dimensions
     const rect = element.getBoundingClientRect();
     const width = rect.width;
     let height = rect.height;
 
-    // Adjust dimensions based on aspect ratio
     switch (aspectRatio) {
-      case "landscape": // 16:9
+      case "landscape":
         height = width * (9 / 16);
         break;
-      case "portrait": // 9:16
+      case "portrait":
         height = width * (16 / 9);
         break;
-      case "phone": // 9:19.5 (iPhone style)
+      case "phone":
         height = width * (19.5 / 9);
         break;
-      case "square": // 1:1
+      case "square":
         height = width;
         break;
       case "current":
       default:
-        // Keep current dimensions
         break;
     }
 
