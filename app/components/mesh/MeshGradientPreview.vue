@@ -36,7 +36,7 @@ function updateLayerPosition(index: number, x: number, y: number) {
 
     <!-- Grain Texture Overlay -->
     <div
-      class="pointer-events-none absolute inset-0 bg-[url('/noise.svg')] opacity-[0.15] mix-blend-overlay"
+      class="pointer-events-none absolute inset-0 bg-[url('/noise.svg')] opacity-[0.5] mix-blend-overlay"
     />
 
     <!-- Control Points -->
