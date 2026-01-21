@@ -30,7 +30,7 @@ const isTyping = (): boolean => {
   if (!activeElement) return false;
 
   const tagName = activeElement.tagName.toLowerCase();
-  const isContentEditable = activeElement.getAttribute("contenteditable") === "true";
+  const isContentEditable = (activeElement as HTMLElement).isContentEditable;
 
   return (
     tagName === "input" ||
@@ -113,6 +113,9 @@ export function useKeyboardShortcuts() {
     onKeyStroke(key, (e) => {
       // Don't trigger shortcuts when typing
       if (isTyping()) return;
+
+      // Don't trigger if any modifier keys are held
+      if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
 
       if (options?.preventDefault) {
         e.preventDefault();

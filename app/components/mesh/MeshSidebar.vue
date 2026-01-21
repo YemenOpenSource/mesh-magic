@@ -89,6 +89,7 @@ onMounted(() => {
           variant="outline"
           size="icon"
           class="text-sidebar-primary-foreground shadow"
+          aria-label="Help"
           @click="openHelpDialog"
         >
           <HugeiconsIcon :icon="HelpCircleIcon" class="size-4" />
