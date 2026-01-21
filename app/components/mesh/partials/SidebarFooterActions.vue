@@ -3,10 +3,21 @@ import {
   ArrowDataTransferHorizontalIcon,
   Plus,
   Recycle03Icon,
+  Bookmark01Icon,
+  FolderLibraryIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/vue";
+import { useSavedGradients } from "~/composables/useSavedGradients";
+import SavedGradientsDialog from "./SavedGradientsDialog.vue";
 
-const { addLayer, reset, randomize } = useMeshGradient();
+const { config, addLayer, reset, randomize } = useMeshGradient();
+const { saveGradient } = useSavedGradients();
+
+const showSavedGradientsDialog = ref(false);
+
+const handleSave = () => {
+  saveGradient(config.value);
+};
 </script>
 
 <template>
@@ -33,6 +44,28 @@ const { addLayer, reset, randomize } = useMeshGradient();
         Reset
       </Button>
     </ButtonGroup>
+    <ButtonGroup class="w-full">
+      <Button
+        aria-label="save-gradient-button"
+        aria-labelledby="save-gradient-button"
+        variant="outline"
+        class="flex-1"
+        @click="handleSave"
+      >
+        <HugeiconsIcon :icon="Bookmark01Icon" size="4" />
+        Save
+      </Button>
+      <Button
+        aria-label="my-gradients-button"
+        aria-labelledby="my-gradients-button"
+        variant="outline"
+        class="flex-1"
+        @click="showSavedGradientsDialog = true"
+      >
+        <HugeiconsIcon :icon="FolderLibraryIcon" size="4" />
+        My Gradients
+      </Button>
+    </ButtonGroup>
     <Button
       aria-label="randomize-button"
       aria-labelledby="randomize-button"
@@ -43,4 +76,6 @@ const { addLayer, reset, randomize } = useMeshGradient();
       Randomize
     </Button>
   </div>
+
+  <SavedGradientsDialog v-model:open="showSavedGradientsDialog" />
 </template>

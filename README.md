@@ -79,7 +79,7 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 
 ---
 
-### [ ] Save favorite gradients to localStorage
+### [x] Save favorite gradients to localStorage
 
 **Goal:** Persist user-created gradients locally for later use.
 
