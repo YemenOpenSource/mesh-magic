@@ -110,7 +110,7 @@ const formatDate = (timestamp: number) => {
                     width: `${layer.size}px`,
                     height: `${layer.size}px`,
                     backgroundColor: layer.color?.hex || '#000',
-                    opacity: (layer.opacity[0] || 100) / 100,
+                    opacity: (layer.opacity?.[0] ?? 100) / 100,
                     filter: `blur(${layer.blur[0] || 0}px)`,
                     borderRadius: layer.borderRadius || '50%',
                     transform: 'translate(-50%, -50%)',
