@@ -25,33 +25,6 @@ A beautiful and intuitive mesh gradient generator built with Nuxt 4. Create stun
 
 ## Feature Roadmap
 
-### [x] Keyboard shortcuts for common actions
-
-**Goal:** Enable power users to interact faster with keyboard shortcuts.
-
-**Implementation:**
-- Created `useKeyboardShortcuts` composable using VueUse's `useMagicKeys` and `onKeyStroke`
-- Implemented shortcuts: `?` (help), `Ctrl+S` (save), `R` (randomize), `Ctrl+R` (reset), `A` (add layer), `Backspace/Delete` (remove layer), `D` (toggle dots)
-- Added keyboard shortcuts help dialog with categorized shortcuts
-- Shortcuts automatically disabled when typing in input fields
-- Cross-platform support (Ctrl for Windows/Linux, Cmd for macOS)
-
----
-
-### [x] Undo/Redo functionality
-
-**Goal:** Allow users to revert and re-apply changes to the gradient configuration.
-
-**Steps:**
-
-1. Create a `useHistory<T>` composable with `past`, `present`, and `future` stacks.
-2. Integrate it into `useMeshGradient.ts`, wrapping the `config` ref.
-3. On every significant change (add/remove layer, color change, position change), push to history.
-4. Expose `undo()`, `redo()`, `canUndo`, `canRedo` from the composable.
-5. Wire up keyboard shortcuts (`Ctrl+Z`, `Ctrl+Shift+Z`) and UI buttons.
-
----
-
 ### [ ] Share gradient via URL with encoded config
 
 **Goal:** Generate a shareable URL containing the gradient configuration.
