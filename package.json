@@ -10,7 +10,8 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "start": "bun preview"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^3.1.1",
